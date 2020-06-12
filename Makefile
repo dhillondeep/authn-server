@@ -27,14 +27,14 @@ dist/authn-linux64: init
 		-w /go/src/github.com/$(NAME) \
 		$(NAME)-linux-builder \
 		sh -c " \
-			GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build -ldflags '-extldflags -static -X main.VERSION=$(VERSION)' -o '$@' \
+			GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build -ldflags '-extldflags -static -X conf.VERSION=$(VERSION)' -o '$@' \
 		"
 	bzip2 -c "$@" > dist/authn-linux64.bz2
 
 # The Darwin target is built using the host machine. Only runs on a MacOS host.
 dist/authn-macos64: init
 ifeq ($(shell uname -s),Darwin)
-	GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build -ldflags "-X main.VERSION=$(VERSION)" -o "$@"
+	GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build -ldflags "-X conf.VERSION=$(VERSION)" -o "$@"
 	bzip2 -c "$@" > dist/authn-macos64.bz2
 endif
 
@@ -42,7 +42,7 @@ endif
 # MacOS: brew install mingw-w64
 # Linux: apt install mingw-w64
 dist/authn-windows64.exe: init
-	GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc go build -ldflags '-X main.VERSION=$(VERSION)' -o '$@'
+	GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc go build -ldflags '-X conf.VERSION=$(VERSION)' -o '$@'
 
 # The Docker target wraps the linux/amd64 binary
 .PHONY: dist/docker
@@ -59,7 +59,7 @@ server: init
 	docker-compose up -d redis
 	DATABASE_URL=sqlite3://localhost/dev \
 		REDIS_URL=redis://127.0.0.1:8701/11 \
-		go run -ldflags "-X main.VERSION=$(VERSION)" $(MAIN)
+		go run -ldflags "-X conf.VERSION=$(VERSION)" $(MAIN) server
 
 # Run tests
 .PHONY: test
@@ -93,7 +93,7 @@ migrate:
 	docker-compose up -d redis
 	DATABASE_URL=sqlite3://localhost/dev \
 		REDIS_URL=redis://127.0.0.1:8701/11 \
-		go run -ldflags "-X main.VERSION=$(VERSION)" $(MAIN) migrate
+		go run -ldflags "-X conf.VERSION=$(VERSION)" $(MAIN) migrate
 
 # Cut a release of the current version.
 .PHONY: release
