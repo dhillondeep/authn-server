@@ -97,7 +97,7 @@ var configurers = []configurer{
 	// the domain includes a port, it must match referred traffic. If the domain does not include a
 	// port, it will match any referred traffic port. Ports 80 and 443 are matched against schemes.
 	func(c *Config) error {
-		val, err := requireEnv("APP_DOMAINS")
+		val, err := requireEnv("app_domains")
 		if err == nil {
 			c.ApplicationDomains = make([]route.Domain, 0)
 			for _, domain := range strings.Split(val, ",") {
@@ -115,7 +115,7 @@ var configurers = []configurer{
 	//
 	// example: https://app.domain.com/authn
 	func(c *Config) error {
-		val, err := lookupURL("AUTHN_URL")
+		val, err := lookupURL("authn_url")
 		if err == nil {
 			if val == nil {
 				return ErrMissingEnvVar("AUTHN_URL")
@@ -142,7 +142,7 @@ var configurers = []configurer{
 	// and it does protect from escalating an attack on one derived key into an
 	// attack on all of the derived keys.
 	func(c *Config) error {
-		val, err := requireEnv("SECRET_KEY_BASE")
+		val, err := requireEnv("secret_key_base")
 		if err == nil {
 			c.SessionSigningKey = derive([]byte(val), "session-key-salt")
 			c.ResetSigningKey = derive([]byte(val), "password-reset-token-key-salt")
@@ -163,7 +163,7 @@ var configurers = []configurer{
 	// There's no reason to go below 10, and 12 starts to become noticeable on
 	// current hardware.
 	func(c *Config) error {
-		cost := lookupInt("BCRYPT_COST")
+		cost := lookupInt("bcrypt_cost")
 		if cost < 10 {
 			return fmt.Errorf("BCRYPT_COST is too low: %v", cost)
 		}
@@ -182,7 +182,7 @@ var configurers = []configurer{
 	//
 	// See: see: https://blogs.dropbox.com/tech/2012/04/zxcvbn-realistic-password-strength-estimation/
 	func(c *Config) error {
-		minScore := lookupInt("PASSWORD_POLICY_SCORE")
+		minScore := lookupInt("password_policy_score")
 		c.PasswordMinComplexity = minScore
 		return nil
 	},
@@ -190,7 +190,7 @@ var configurers = []configurer{
 	// PASSWORD_CHANGE_LOGOUT will enable a behavior where password resets and updates cause other
 	// devices to be logged out.
 	func(c *Config) error {
-		c.PasswordChangeLogout = lookupBool("PASSWORD_CHANGE_LOGOUT")
+		c.PasswordChangeLogout = lookupBool("password_change_logout")
 		return nil
 	},
 
@@ -199,7 +199,7 @@ var configurers = []configurer{
 	//
 	// Example: sqlite3://localhost/authn-go
 	func(c *Config) error {
-		val, err := lookupURL("DATABASE_URL")
+		val, err := lookupURL("database_url")
 		if err == nil {
 			if val == nil {
 				return ErrMissingEnvVar("DATABASE_URL")
@@ -214,7 +214,7 @@ var configurers = []configurer{
 	//
 	// Example: redis://127.0.0.1:6379/11
 	func(c *Config) error {
-		val, err := lookupURL("REDIS_URL")
+		val, err := lookupURL("redis_url")
 		if err == nil {
 			c.RedisURL = val
 		}
@@ -225,14 +225,14 @@ var configurers = []configurer{
 	// email validations for username fields. By default, usernames are just
 	// strings.
 	func(c *Config) error {
-		c.UsernameIsEmail = lookupBool("USERNAME_IS_EMAIL")
+		c.UsernameIsEmail = lookupBool("username_is_email")
 		return nil
 	},
 
 	// ENABLE_SIGNUP may be set to a falsy value ("f", "false", "no") to disable
 	// signup endpoints.
 	func(c *Config) error {
-		c.EnableSignup = lookupBool("ENABLE_SIGNUP")
+		c.EnableSignup = lookupBool("enable_signup")
 		return nil
 	},
 
@@ -242,7 +242,7 @@ var configurers = []configurer{
 	//
 	// This setting only has effect if USERNAME_IS_EMAIL has been set.
 	func(c *Config) error {
-		if val, ok := os.LookupEnv("EMAIL_USERNAME_DOMAINS"); ok {
+		if val, ok := os.LookupEnv("email_username_domains"); ok {
 			c.UsernameDomains = strings.Split(val, ",")
 		}
 		return nil
@@ -252,7 +252,7 @@ var configurers = []configurer{
 	// last touch. This is necessary to prevent years-long Redis bloat from
 	// inactive sessions, where users close the window rather than log out.
 	func(c *Config) error {
-		ttl := lookupInt("REFRESH_TOKEN_TTL")
+		ttl := lookupInt("refresh_token_ttl")
 		c.RefreshTokenTTL = time.Duration(ttl) * time.Second
 		return nil
 	},
@@ -263,7 +263,7 @@ var configurers = []configurer{
 	// manner. If a user loses control of a password reset token, they will lose
 	// control of their account.
 	func(c *Config) error {
-		ttl := lookupInt("PASSWORD_RESET_TOKEN_TTL")
+		ttl := lookupInt("password_reset_token_ttl")
 		c.ResetTokenTTL = time.Duration(ttl) * time.Second
 		return nil
 	},
@@ -274,7 +274,7 @@ var configurers = []configurer{
 	// manner. If a user loses control of a passwordless token, they will lose
 	// control of their account.
 	func(c *Config) error {
-		ttl := lookupInt("PASSWORDLESS_TOKEN_TTL")
+		ttl := lookupInt("passwordless_token_ttl")
 		c.PasswordlessTokenTTL = time.Duration(ttl) * time.Second
 		return nil
 	},
@@ -291,7 +291,7 @@ var configurers = []configurer{
 	// Note that revoking a refresh token will not invalidate access tokens until
 	// this TTL passes, so shorter is better.
 	func(c *Config) error {
-		ttl := lookupInt("ACCESS_TOKEN_TTL")
+		ttl := lookupInt("access_token_ttl")
 		c.AccessTokenTTL = time.Duration(ttl) * time.Second
 		return nil
 	},
@@ -301,7 +301,7 @@ var configurers = []configurer{
 	//
 	// This security pattern requires communication with AuthN to use SSL.
 	func(c *Config) error {
-		if val, ok := os.LookupEnv("HTTP_AUTH_USERNAME"); ok {
+		if val, ok := os.LookupEnv("http_auth_username"); ok {
 			c.AuthUsername = val
 		} else {
 			i, err := rand.Int(rand.Reader, big.NewInt(99999999))
@@ -310,7 +310,7 @@ var configurers = []configurer{
 			}
 			c.AuthUsername = i.String()
 		}
-		if val, ok := os.LookupEnv("HTTP_AUTH_PASSWORD"); ok {
+		if val, ok := os.LookupEnv("http_auth_password"); ok {
 			c.AuthPassword = val
 		} else {
 			i, err := rand.Int(rand.Reader, big.NewInt(99999999))
@@ -329,7 +329,7 @@ var configurers = []configurer{
 	// For security, this URL should specify https and include a basic auth username
 	// and password.
 	func(c *Config) error {
-		val, err := lookupURL("APP_PASSWORD_CHANGED_URL")
+		val, err := lookupURL("app_password_changed_url")
 		if err == nil && val != nil {
 			c.AppPasswordChangedURL = val
 		}
@@ -343,7 +343,7 @@ var configurers = []configurer{
 	// For security, this URL should specify https and include a basic auth username
 	// and password.
 	func(c *Config) error {
-		val, err := lookupURL("APP_PASSWORD_RESET_URL")
+		val, err := lookupURL("app_password_reset_url")
 		if err == nil && val != nil {
 			c.AppPasswordResetURL = val
 		}
@@ -357,7 +357,7 @@ var configurers = []configurer{
 	// For security, this URL should specify https and include a basic auth username
 	// and password.
 	func(c *Config) error {
-		val, err := lookupURL("APP_PASSWORDLESS_TOKEN_URL")
+		val, err := lookupURL("app_passwordless_token_url")
 		if err == nil && val != nil {
 			c.AppPasswordlessTokenURL = val
 		}
@@ -371,7 +371,7 @@ var configurers = []configurer{
 	// generate and manage keys itself, using Redis for coordination and
 	// persistence.
 	func(c *Config) error {
-		if str, ok := os.LookupEnv("RSA_PRIVATE_KEY"); ok {
+		if str, ok := os.LookupEnv("rsa_private_key"); ok {
 			str = strings.Replace(str, `\n`, "\n", -1)
 			block, _ := pem.Decode([]byte(str))
 			key, err := x509.ParsePKCS1PrivateKey(block.Bytes)
@@ -389,7 +389,7 @@ var configurers = []configurer{
 	// TIME_ZONE is the IANA name of a location that should be used when calculating
 	// which day it is when tracking key stats. It defaults to UTC.
 	func(c *Config) error {
-		name, ok := os.LookupEnv("TIME_ZONE")
+		name, ok := os.LookupEnv("time_zone")
 		if !ok {
 			name = "UTC"
 		}
@@ -405,21 +405,21 @@ var configurers = []configurer{
 	// DAILY_ACTIVES_RETENTION is how many daily records of the number of active accounts to keep.
 	// The default is 365 (~1 year).
 	func(c *Config) error {
-		c.DailyActivesRetention = lookupInt("DAILY_ACTIVES_RETENTION")
+		c.DailyActivesRetention = lookupInt("daily_actives_retention")
 		return nil
 	},
 
 	// WEEKLY_ACTIVES_RETENTION is how many weekly records of the number of active accounts to keep.
 	// The default is 104 (~2 years).
 	func(c *Config) error {
-		c.WeeklyActivesRetention = lookupInt("WEEKLY_ACTIVES_RETENTION")
+		c.WeeklyActivesRetention = lookupInt("weekly_actives_retention")
 		return nil
 	},
 
 	// SENTRY_DSN is a configuration string for the Sentry error reporting backend. When provided,
 	// errors and panics will be reported asynchronously.
 	func(c *Config) error {
-		if val, ok := os.LookupEnv("SENTRY_DSN"); ok {
+		if val, ok := os.LookupEnv("sentry_dsn"); ok {
 			c.ErrorReporterCredentials = val
 			c.ErrorReporterType = ops.Sentry
 		}
@@ -429,7 +429,7 @@ var configurers = []configurer{
 	// AIRBRAKE_CREDENTIALS is a configuration string for the Airbrake error reporting backend. When
 	// provided, errors and panics will be reported asynchronously.
 	func(c *Config) error {
-		if val, ok := os.LookupEnv("AIRBRAKE_CREDENTIALS"); ok {
+		if val, ok := os.LookupEnv("airbrake_credentials"); ok {
 			c.ErrorReporterCredentials = val
 			c.ErrorReporterType = ops.Airbrake
 		}
@@ -445,10 +445,10 @@ var configurers = []configurer{
 		}
 
 		var port int
-		if !viper.IsSet("PORT") {
+		if !viper.IsSet("port") {
 			port = defaultPort
 		}
-		port = lookupInt("PORT")
+		port = lookupInt("port")
 
 		c.ServerPort = port
 		return nil
@@ -458,21 +458,21 @@ var configurers = []configurer{
 	// is useful to avoid exposing admin routes to the public, since you can configure a proxy or
 	// load balancer to forward to only the appropriate port.
 	func(c *Config) error {
-		c.PublicPort = lookupInt("PUBLIC_PORT")
+		c.PublicPort = lookupInt("public_port")
 		return nil
 	},
 
 	// PROXIED is a flag that indicates AuthN is behind a proxy. When set, AuthN will read IP
 	// addresses from X-FORWARDED-FOR (and similar).
 	func(c *Config) error {
-		c.Proxied = lookupBool("PROXIED")
+		c.Proxied = lookupBool("proxied")
 		return nil
 	},
 
 	// SAME_SITE sets the SameSite property of the AuthN session cookie. When not specified, AuthN
 	// will choose between Lax and Strict based on the presence of OAuth providers.
 	func(c *Config) error {
-		if val, ok := os.LookupEnv("SAME_SITE"); ok {
+		if val, ok := os.LookupEnv("same_site"); ok {
 			switch strings.ToUpper(val) {
 			case "NONE":
 				c.SameSite = http.SameSiteNoneMode
@@ -490,7 +490,7 @@ var configurers = []configurer{
 	// GOOGLE_OAUTH_CREDENTIALS is a credential pair in the format `id:secret`. When specified,
 	// AuthN will enable routes for Google OAuth signin.
 	func(c *Config) error {
-		if val, ok := os.LookupEnv("GOOGLE_OAUTH_CREDENTIALS"); ok {
+		if val, ok := os.LookupEnv("google_oauth_credentials"); ok {
 			credentials, err := oauth.NewCredentials(val)
 			if err == nil {
 				c.GoogleOauthCredentials = credentials
@@ -503,7 +503,7 @@ var configurers = []configurer{
 	// GITHUB_OAUTH_CREDENTIALS is a credential pair in the format `id:secret`. When specified,
 	// AuthN will enable routes for GitHub OAuth signin.
 	func(c *Config) error {
-		if val, ok := os.LookupEnv("GITHUB_OAUTH_CREDENTIALS"); ok {
+		if val, ok := os.LookupEnv("github_oauth_credentials"); ok {
 			credentials, err := oauth.NewCredentials(val)
 			if err == nil {
 				c.GitHubOauthCredentials = credentials
@@ -516,7 +516,7 @@ var configurers = []configurer{
 	// FACEBOOK_OAUTH_CREDENTIALS is a credential pair in the format `id:secret`. When specified,
 	// AuthN will enable routes for Facebook OAuth signin.
 	func(c *Config) error {
-		if val, ok := os.LookupEnv("FACEBOOK_OAUTH_CREDENTIALS"); ok {
+		if val, ok := os.LookupEnv("facebook_oauth_credentials"); ok {
 			credentials, err := oauth.NewCredentials(val)
 			if err == nil {
 				c.FacebookOauthCredentials = credentials
@@ -529,7 +529,7 @@ var configurers = []configurer{
 	// DISCORD_OAUTH_CREDENTIALS is a credential pair in the format `id:secret`. When specified,
 	// AuthN will enable routes for Discord OAuth signin.
 	func(c *Config) error {
-		if val, ok := os.LookupEnv("DISCORD_OAUTH_CREDENTIALS"); ok {
+		if val, ok := os.LookupEnv("discord_oauth_credentials"); ok {
 			credentials, err := oauth.NewCredentials(val)
 			if err == nil {
 				c.DiscordOauthCredentials = credentials
@@ -542,7 +542,7 @@ var configurers = []configurer{
 	// Microsoft_OAUTH_CREDENTIALS is a credential pair in the format `id:secret`. When specified,
 	// AuthN will enable routes for Discord OAuth signin.
 	func(c *Config) error {
-		if val, ok := os.LookupEnv("MICROSOFT_OAUTH_CREDENTIALS"); ok {
+		if val, ok := os.LookupEnv("microsoft_oauth_credentials"); ok {
 			credentials, err := oauth.NewCredentials(val)
 			if err == nil {
 				c.MicrosoftOauthCredientials = credentials
