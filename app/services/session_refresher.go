@@ -1,18 +1,18 @@
 package services
 
 import (
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data"
-	"github.com/keratin/authn-server/lib/route"
 	"github.com/keratin/authn-server/app/models"
-	"github.com/keratin/authn-server/ops"
 	"github.com/keratin/authn-server/app/tokens/identities"
 	"github.com/keratin/authn-server/app/tokens/sessions"
+	"github.com/keratin/authn-server/conf"
+	"github.com/keratin/authn-server/lib/route"
+	"github.com/keratin/authn-server/ops"
 	"github.com/pkg/errors"
 )
 
 func SessionRefresher(
-	refreshTokenStore data.RefreshTokenStore, keyStore data.KeyStore, actives data.Actives, cfg *app.Config, reporter ops.ErrorReporter,
+	refreshTokenStore data.RefreshTokenStore, keyStore data.KeyStore, actives data.Actives, cfg *conf.Config, reporter ops.ErrorReporter,
 	session *sessions.Claims, accountID int, audience *route.Domain,
 ) (string, error) {
 	// track actives

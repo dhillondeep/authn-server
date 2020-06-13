@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/keratin/authn-server/app"
+	"github.com/keratin/authn-server/conf"
 	"github.com/pkg/errors"
 	jose "gopkg.in/square/go-jose.v2"
 	jwt "gopkg.in/square/go-jose.v2/jwt"
@@ -36,7 +36,7 @@ func (c *Claims) Sign(hmacKey []byte) (string, error) {
 
 // Parse will deserialize a string into Claims if and only if the claims pass all validations. In
 // this case the token must contain a nonce already known from a different channel (like a cookie).
-func Parse(tokenStr string, cfg *app.Config, nonce string) (*Claims, error) {
+func Parse(tokenStr string, cfg *conf.Config, nonce string) (*Claims, error) {
 	token, err := jwt.ParseSigned(tokenStr)
 	if err != nil {
 		return nil, errors.Wrap(err, "ParseSigned")
@@ -66,9 +66,9 @@ func Parse(tokenStr string, cfg *app.Config, nonce string) (*Claims, error) {
 }
 
 // New creates Claims for a JWT suitable as a state parameter during an OAuth flow.
-func New(cfg *app.Config, nonce string, destination string) (*Claims, error) {
+func New(cfg *conf.Config, nonce string, destination string) (*Claims, error) {
 	return &Claims{
-		Scope: scope,
+		Scope:                    scope,
 		RequestForgeryProtection: nonce,
 		Destination:              destination,
 		Claims: jwt.Claims{

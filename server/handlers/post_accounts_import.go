@@ -14,7 +14,7 @@ func PostAccountsImport(app *app.App) http.HandlerFunc {
 		var user struct {
 			Username string
 			Password string
-			Locked string
+			Locked   string
 		}
 		if err := parse.Payload(r, &user); err != nil {
 			WriteErrors(w, err)

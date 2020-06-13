@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/keratin/authn-server/app/data/private"
+	"github.com/keratin/authn-server/conf"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/tokens/sessions"
 	"github.com/pkg/errors"
 	"gopkg.in/square/go-jose.v2"
@@ -34,7 +34,7 @@ func (c *Claims) Sign(key *private.Key) (string, error) {
 	return jwt.Signed(signer).Claims(c).CompactSerialize()
 }
 
-func New(cfg *app.Config, session *sessions.Claims, accountID int, audience string) *Claims {
+func New(cfg *conf.Config, session *sessions.Claims, accountID int, audience string) *Claims {
 	return &Claims{
 		AuthTime: session.IssuedAt,
 		Claims: jwt.Claims{

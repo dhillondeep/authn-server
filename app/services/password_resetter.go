@@ -3,15 +3,15 @@ package services
 import (
 	"strconv"
 
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/ops"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data"
 	"github.com/keratin/authn-server/app/tokens/resets"
 	"github.com/pkg/errors"
 )
 
-func PasswordResetter(store data.AccountStore, r ops.ErrorReporter, cfg *app.Config, token string, password string) (int, error) {
+func PasswordResetter(store data.AccountStore, r ops.ErrorReporter, cfg *conf.Config, token string, password string) (int, error) {
 	claims, err := resets.Parse(token, cfg)
 	if err != nil {
 		return 0, FieldErrors{{"token", ErrInvalidOrExpired}}

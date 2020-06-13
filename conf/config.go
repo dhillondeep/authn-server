@@ -1,4 +1,4 @@
-package app
+package conf
 
 import (
 	"crypto/rand"
@@ -15,9 +15,8 @@ import (
 	"time"
 
 	"github.com/keratin/authn-server/app/data/private"
+	"github.com/spf13/viper"
 
-	// a .env file is extremely useful during development
-	_ "github.com/joho/godotenv/autoload"
 	"github.com/keratin/authn-server/lib/oauth"
 	"github.com/keratin/authn-server/lib/route"
 	"github.com/keratin/authn-server/ops"
@@ -164,14 +163,12 @@ var configurers = []configurer{
 	// There's no reason to go below 10, and 12 starts to become noticeable on
 	// current hardware.
 	func(c *Config) error {
-		cost, err := lookupInt("BCRYPT_COST", 11)
-		if err == nil {
-			if cost < 10 {
-				return fmt.Errorf("BCRYPT_COST is too low: %v", cost)
-			}
-			c.BcryptCost = cost
+		cost := lookupInt("BCRYPT_COST")
+		if cost < 10 {
+			return fmt.Errorf("BCRYPT_COST is too low: %v", cost)
 		}
-		return err
+		c.BcryptCost = cost
+		return nil
 	},
 
 	// PASSWORD_POLICY_SCORE is a minimum complexity score that a password must get
@@ -185,21 +182,16 @@ var configurers = []configurer{
 	//
 	// See: see: https://blogs.dropbox.com/tech/2012/04/zxcvbn-realistic-password-strength-estimation/
 	func(c *Config) error {
-		minScore, err := lookupInt("PASSWORD_POLICY_SCORE", 2)
-		if err == nil {
-			c.PasswordMinComplexity = minScore
-		}
-		return err
+		minScore := lookupInt("PASSWORD_POLICY_SCORE")
+		c.PasswordMinComplexity = minScore
+		return nil
 	},
 
 	// PASSWORD_CHANGE_LOGOUT will enable a behavior where password resets and updates cause other
 	// devices to be logged out.
 	func(c *Config) error {
-		passwordChangeLogout, err := lookupBool("PASSWORD_CHANGE_LOGOUT", false)
-		if err == nil {
-			c.PasswordChangeLogout = passwordChangeLogout
-		}
-		return err
+		c.PasswordChangeLogout = lookupBool("PASSWORD_CHANGE_LOGOUT")
+		return nil
 	},
 
 	// A DATABASE_URL is a string that can specify the database engine, connection
@@ -233,21 +225,15 @@ var configurers = []configurer{
 	// email validations for username fields. By default, usernames are just
 	// strings.
 	func(c *Config) error {
-		isEmail, err := lookupBool("USERNAME_IS_EMAIL", false)
-		if err == nil {
-			c.UsernameIsEmail = isEmail
-		}
-		return err
+		c.UsernameIsEmail = lookupBool("USERNAME_IS_EMAIL")
+		return nil
 	},
 
 	// ENABLE_SIGNUP may be set to a falsy value ("f", "false", "no") to disable
 	// signup endpoints.
 	func(c *Config) error {
-		enableSignup, err := lookupBool("ENABLE_SIGNUP", true)
-		if err == nil {
-			c.EnableSignup = enableSignup
-		}
-		return err
+		c.EnableSignup = lookupBool("ENABLE_SIGNUP")
+		return nil
 	},
 
 	// EMAIL_USERNAME_DOMAINS is a comma-delimited list of domains that an email
@@ -266,11 +252,9 @@ var configurers = []configurer{
 	// last touch. This is necessary to prevent years-long Redis bloat from
 	// inactive sessions, where users close the window rather than log out.
 	func(c *Config) error {
-		ttl, err := lookupInt("REFRESH_TOKEN_TTL", 86400*30)
-		if err == nil {
-			c.RefreshTokenTTL = time.Duration(ttl) * time.Second
-		}
-		return err
+		ttl := lookupInt("REFRESH_TOKEN_TTL")
+		c.RefreshTokenTTL = time.Duration(ttl) * time.Second
+		return nil
 	},
 
 	// PASSWORD_RESET_TOKEN_TTL determines how long a password reset token (as JWT)
@@ -279,11 +263,9 @@ var configurers = []configurer{
 	// manner. If a user loses control of a password reset token, they will lose
 	// control of their account.
 	func(c *Config) error {
-		ttl, err := lookupInt("PASSWORD_RESET_TOKEN_TTL", 1800)
-		if err == nil {
-			c.ResetTokenTTL = time.Duration(ttl) * time.Second
-		}
-		return err
+		ttl := lookupInt("PASSWORD_RESET_TOKEN_TTL")
+		c.ResetTokenTTL = time.Duration(ttl) * time.Second
+		return nil
 	},
 
 	// PASSWORDLESS_TOKEN_TTL determines how long a passwordless token (as JWT)
@@ -292,11 +274,9 @@ var configurers = []configurer{
 	// manner. If a user loses control of a passwordless token, they will lose
 	// control of their account.
 	func(c *Config) error {
-		ttl, err := lookupInt("PASSWORDLESS_TOKEN_TTL", 1800)
-		if err == nil {
-			c.PasswordlessTokenTTL = time.Duration(ttl) * time.Second
-		}
-		return err
+		ttl := lookupInt("PASSWORDLESS_TOKEN_TTL")
+		c.PasswordlessTokenTTL = time.Duration(ttl) * time.Second
+		return nil
 	},
 
 	// ACCESS_TOKEN_TTL determines how long an access token (as JWT) will remain
@@ -311,11 +291,9 @@ var configurers = []configurer{
 	// Note that revoking a refresh token will not invalidate access tokens until
 	// this TTL passes, so shorter is better.
 	func(c *Config) error {
-		ttl, err := lookupInt("ACCESS_TOKEN_TTL", 3600)
-		if err == nil {
-			c.AccessTokenTTL = time.Duration(ttl) * time.Second
-		}
-		return err
+		ttl := lookupInt("ACCESS_TOKEN_TTL")
+		c.AccessTokenTTL = time.Duration(ttl) * time.Second
+		return nil
 	},
 
 	// HTTP_AUTH_USERNAME and HTTP_AUTH_PASSWORD specify the basic auth credentials
@@ -427,21 +405,15 @@ var configurers = []configurer{
 	// DAILY_ACTIVES_RETENTION is how many daily records of the number of active accounts to keep.
 	// The default is 365 (~1 year).
 	func(c *Config) error {
-		num, err := lookupInt("DAILY_ACTIVES_RETENTION", 365)
-		if err == nil {
-			c.DailyActivesRetention = num
-		}
-		return err
+		c.DailyActivesRetention = lookupInt("DAILY_ACTIVES_RETENTION")
+		return nil
 	},
 
 	// WEEKLY_ACTIVES_RETENTION is how many weekly records of the number of active accounts to keep.
 	// The default is 104 (~2 years).
 	func(c *Config) error {
-		num, err := lookupInt("WEEKLY_ACTIVES_RETENTION", 104)
-		if err == nil {
-			c.WeeklyActivesRetention = num
-		}
-		return err
+		c.WeeklyActivesRetention = lookupInt("WEEKLY_ACTIVES_RETENTION")
+		return nil
 	},
 
 	// SENTRY_DSN is a configuration string for the Sentry error reporting backend. When provided,
@@ -468,32 +440,33 @@ var configurers = []configurer{
 	// may be different for port mapping scenarios as with containers and load balancers.
 	func(c *Config) error {
 		defaultPort, err := strconv.Atoi(c.AuthNURL.Port())
-		val, err := lookupInt("PORT", defaultPort)
-		if err == nil {
-			c.ServerPort = val
+		if err != nil {
+			return err
 		}
-		return err
+
+		var port int
+		if !viper.IsSet("PORT") {
+			port = defaultPort
+		}
+		port = lookupInt("PORT")
+
+		c.ServerPort = port
+		return nil
 	},
 
 	// PUBLIC_PORT is an extra local port the AuthN server listens to with only public routes. This
 	// is useful to avoid exposing admin routes to the public, since you can configure a proxy or
 	// load balancer to forward to only the appropriate port.
 	func(c *Config) error {
-		val, err := lookupInt("PUBLIC_PORT", 0)
-		if err == nil {
-			c.PublicPort = val
-		}
-		return err
+		c.PublicPort = lookupInt("PUBLIC_PORT")
+		return nil
 	},
 
 	// PROXIED is a flag that indicates AuthN is behind a proxy. When set, AuthN will read IP
 	// addresses from X-FORWARDED-FOR (and similar).
 	func(c *Config) error {
-		val, err := lookupBool("PROXIED", false)
-		if err == nil {
-			c.Proxied = val
-		}
-		return err
+		c.Proxied = lookupBool("PROXIED")
+		return nil
 	},
 
 	// SAME_SITE sets the SameSite property of the AuthN session cookie. When not specified, AuthN

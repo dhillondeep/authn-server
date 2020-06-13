@@ -3,9 +3,9 @@ package sessions
 import (
 	"net/http"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/models"
 	"github.com/keratin/authn-server/app/tokens/sessions"
+	"github.com/keratin/authn-server/conf"
 )
 
 func Get(r *http.Request) *sessions.Claims {
@@ -24,7 +24,7 @@ func GetAccountID(r *http.Request) int {
 	return 0
 }
 
-func Set(cfg *app.Config, w http.ResponseWriter, val string) {
+func Set(cfg *conf.Config, w http.ResponseWriter, val string) {
 	cookie := &http.Cookie{
 		Name:     cfg.SessionCookieName,
 		Value:    val,

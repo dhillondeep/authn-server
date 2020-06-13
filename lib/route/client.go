@@ -28,7 +28,7 @@ const (
 	put     = "PUT"
 	options = "OPTIONS"
 
-	contentTypeJSON = "application/json"
+	contentTypeJSON           = "application/json"
 	contentTypeFormURLEncoded = "application/x-www-form-urlencoded"
 )
 

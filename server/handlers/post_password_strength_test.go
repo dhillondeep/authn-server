@@ -42,4 +42,3 @@ func TestPostPasswordScore(t *testing.T) {
 	})
 
 }
-

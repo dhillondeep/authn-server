@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/keratin/authn-server/app"
+	"github.com/keratin/authn-server/conf"
 	"github.com/pkg/errors"
 	jose "gopkg.in/square/go-jose.v2"
 	jwt "gopkg.in/square/go-jose.v2/jwt"
@@ -29,7 +29,7 @@ func (c *Claims) Sign(hmacKey []byte) (string, error) {
 	return jwt.Signed(signer).Claims(c).CompactSerialize()
 }
 
-func Parse(tokenStr string, cfg *app.Config) (*Claims, error) {
+func Parse(tokenStr string, cfg *conf.Config) (*Claims, error) {
 	token, err := jwt.ParseSigned(tokenStr)
 	if err != nil {
 		return nil, errors.Wrap(err, "ParseSigned")
@@ -56,7 +56,7 @@ func Parse(tokenStr string, cfg *app.Config) (*Claims, error) {
 	return &claims, nil
 }
 
-func New(cfg *app.Config, accountID int) (*Claims, error) {
+func New(cfg *conf.Config, accountID int) (*Claims, error) {
 	return &Claims{
 		Scope: scope,
 		Claims: jwt.Claims{

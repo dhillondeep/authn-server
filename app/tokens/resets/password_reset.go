@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/keratin/authn-server/app"
+	"github.com/keratin/authn-server/conf"
 	"github.com/pkg/errors"
 	jose "gopkg.in/square/go-jose.v2"
 	jwt "gopkg.in/square/go-jose.v2/jwt"
@@ -14,7 +14,7 @@ import (
 const scope = "reset"
 
 type Claims struct {
-	Scope string          `json:"scope"`
+	Scope string           `json:"scope"`
 	Lock  *jwt.NumericDate `json:"lock"`
 	jwt.Claims
 }
@@ -37,7 +37,7 @@ func (c *Claims) LockExpired(passwordChangedAt time.Time) bool {
 	return expiredAt.After(lockedAt)
 }
 
-func Parse(tokenStr string, cfg *app.Config) (*Claims, error) {
+func Parse(tokenStr string, cfg *conf.Config) (*Claims, error) {
 	token, err := jwt.ParseSigned(tokenStr)
 	if err != nil {
 		return nil, errors.Wrap(err, "ParseSigned")
@@ -64,7 +64,7 @@ func Parse(tokenStr string, cfg *app.Config) (*Claims, error) {
 	return &claims, nil
 }
 
-func New(cfg *app.Config, accountID int, passwordChangedAt time.Time) (*Claims, error) {
+func New(cfg *conf.Config, accountID int, passwordChangedAt time.Time) (*Claims, error) {
 	return &Claims{
 		Scope: scope,
 		Lock:  jwt.NewNumericDate(passwordChangedAt),

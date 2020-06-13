@@ -84,7 +84,7 @@ func TestParsingOnServer(t *testing.T) {
 	})
 
 	t.Run("Should return an error for malformed JSON request", func(t *testing.T) {
-		var requestBody struct {}
+		var requestBody struct{}
 		var err error
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			err = Payload(r, &requestBody)

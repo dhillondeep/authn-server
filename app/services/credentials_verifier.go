@@ -1,9 +1,9 @@
 package services
 
 import (
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data"
 	"github.com/keratin/authn-server/app/models"
+	"github.com/keratin/authn-server/conf"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -15,7 +15,7 @@ var emptyHashes = map[int]string{
 	12: "$2a$12$w58M3IGXURRAqXQ/OAsMmuqcV4YqP3WyJ.yHvHI5ANUK1bRWxeceK",
 }
 
-func CredentialsVerifier(store data.AccountStore, cfg *app.Config, username string, password string) (*models.Account, error) {
+func CredentialsVerifier(store data.AccountStore, cfg *conf.Config, username string, password string) (*models.Account, error) {
 	if username == "" && password == "" {
 		return nil, FieldErrors{{"credentials", ErrFailed}}
 	}

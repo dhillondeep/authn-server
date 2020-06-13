@@ -2,11 +2,12 @@ package services
 
 import (
 	"encoding/hex"
-	"github.com/keratin/authn-server/app"
+
 	"github.com/keratin/authn-server/app/data"
+	"github.com/keratin/authn-server/app/models"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/lib"
 	"github.com/keratin/authn-server/lib/oauth"
-	"github.com/keratin/authn-server/app/models"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 )
@@ -22,7 +23,7 @@ import (
 // * account is locked
 // * linkable account is already linked
 // * identity's email is already registered
-func IdentityReconciler(accountStore data.AccountStore, cfg *app.Config, providerName string, providerUser *oauth.UserInfo, providerToken *oauth2.Token, linkableAccountID int) (*models.Account, error) {
+func IdentityReconciler(accountStore data.AccountStore, cfg *conf.Config, providerName string, providerUser *oauth.UserInfo, providerToken *oauth2.Token, linkableAccountID int) (*models.Account, error) {
 	// 1. check for linked account
 	linkedAccount, err := accountStore.FindByOauthAccount(providerName, providerUser.ID)
 	if err != nil {

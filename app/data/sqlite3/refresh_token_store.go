@@ -10,8 +10,8 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/keratin/authn-server/lib"
 	"github.com/keratin/authn-server/app/models"
+	"github.com/keratin/authn-server/lib"
 )
 
 type RefreshTokenStore struct {

@@ -4,14 +4,14 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/ops"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func PasswordSetter(store data.AccountStore, r ops.ErrorReporter, cfg *app.Config, accountID int, password string) error {
+func PasswordSetter(store data.AccountStore, r ops.ErrorReporter, cfg *conf.Config, accountID int, password string) error {
 	fieldError := PasswordValidator(cfg, password)
 	if fieldError != nil {
 		return FieldErrors{*fieldError}

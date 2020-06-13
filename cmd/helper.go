@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/keratin/authn-server/app"
+	"github.com/keratin/authn-server/conf"
 )
 
 // readEnv reads configuration from environment values
-func readEnv() (*app.Config, bool) {
-	cfg, err := app.ReadEnv()
+func readEnv() (*conf.Config, bool) {
+	cfg, err := conf.ReadEnv()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 		fmt.Fprintf(os.Stderr, "%s\n", "see: https://github.com/keratin/authn-server/blob/master/docs/config.md")

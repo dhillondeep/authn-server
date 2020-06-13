@@ -5,13 +5,13 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/tokens/oauth"
+	"github.com/keratin/authn-server/conf"
 	"github.com/pkg/errors"
 )
 
 // nonceCookie creates or deletes a cookie containing val (the nonce)
-func nonceCookie(cfg *app.Config, val string) *http.Cookie {
+func nonceCookie(cfg *conf.Config, val string) *http.Cookie {
 	var maxAge int
 	if val == "" {
 		maxAge = -1
@@ -31,7 +31,7 @@ func nonceCookie(cfg *app.Config, val string) *http.Cookie {
 }
 
 // getState returns a verified state token using the nonce cookie
-func getState(cfg *app.Config, r *http.Request) (*oauth.Claims, error) {
+func getState(cfg *conf.Config, r *http.Request) (*oauth.Claims, error) {
 	nonce, err := r.Cookie(cfg.OAuthCookieName)
 	if err != nil {
 		return nil, errors.Wrap(err, "Cookie")

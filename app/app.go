@@ -4,6 +4,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/jmoiron/sqlx"
 	"github.com/keratin/authn-server/app/data"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/lib/oauth"
 	"github.com/keratin/authn-server/ops"
 	"github.com/pkg/errors"
@@ -18,7 +19,7 @@ type App struct {
 	DB                *sqlx.DB
 	DbCheck           pinger
 	RedisCheck        pinger
-	Config            *Config
+	Config            *conf.Config
 	AccountStore      data.AccountStore
 	RefreshTokenStore data.RefreshTokenStore
 	KeyStore          data.KeyStore
@@ -28,7 +29,7 @@ type App struct {
 	Logger            logrus.FieldLogger
 }
 
-func NewApp(cfg *Config, logger logrus.FieldLogger) (*App, error) {
+func NewApp(cfg *conf.Config, logger logrus.FieldLogger) (*App, error) {
 	errorReporter, err := ops.NewErrorReporter(cfg.ErrorReporterCredentials, cfg.ErrorReporterType, logger)
 
 	db, err := data.NewDB(cfg.DatabaseURL)
