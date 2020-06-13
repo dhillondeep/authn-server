@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/keratin/authn-server/conf"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -12,7 +13,8 @@ import (
 var (
 	configFile string
 	rootCmd    = &cobra.Command{
-		Use: "authn-server",
+		Use:     "authn-server",
+		Version: conf.Version,
 	}
 )
 

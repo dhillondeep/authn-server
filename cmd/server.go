@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/server"
 	"github.com/sirupsen/logrus"
