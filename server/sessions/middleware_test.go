@@ -8,6 +8,7 @@ import (
 
 	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data/mock"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/lib/route"
 	"github.com/keratin/authn-server/ops"
 	"github.com/keratin/authn-server/server/sessions"
@@ -19,7 +20,7 @@ import (
 
 func TestSession(t *testing.T) {
 	testApp := &app.App{
-		Config: &app.Config{
+		Config: &conf.Config{
 			SessionCookieName:  "authn-test",
 			SessionSigningKey:  []byte("drinkme"),
 			AuthNURL:           &url.URL{Scheme: "http", Host: "authn.example.com"},
@@ -49,7 +50,7 @@ func TestSession(t *testing.T) {
 	})
 
 	t.Run("invalid session", func(t *testing.T) {
-		oldConfig := &app.Config{
+		oldConfig := &conf.Config{
 			SessionCookieName:  testApp.Config.SessionCookieName,
 			SessionSigningKey:  []byte("previouskey"),
 			AuthNURL:           testApp.Config.AuthNURL,

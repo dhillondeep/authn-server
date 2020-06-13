@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/models"
 	"github.com/keratin/authn-server/app/services"
+	"github.com/keratin/authn-server/conf"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -34,7 +34,7 @@ func TestPasswordlessTokenSender(t *testing.T) {
 	passwordlessURL := &url.URL{Scheme: "http", Host: serverURL.Host, Path: "/passwordless", User: url.UserPassword("user", "pass")}
 
 	invoke := func(account *models.Account) error {
-		cfg := &app.Config{
+		cfg := &conf.Config{
 			AuthNURL:                    authNURL,
 			AppPasswordlessTokenURL:     passwordlessURL,
 			PasswordlessTokenSigningKey: []byte("passwordless"),

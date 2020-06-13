@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data/mock"
 	"github.com/keratin/authn-server/app/services"
 	"github.com/keratin/authn-server/app/tokens/resets"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/ops"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -17,7 +17,7 @@ import (
 
 func TestPasswordResetter(t *testing.T) {
 	accountStore := mock.NewAccountStore()
-	cfg := &app.Config{
+	cfg := &conf.Config{
 		AuthNURL:              &url.URL{Scheme: "http", Host: "authn.example.com"},
 		BcryptCost:            4,
 		PasswordMinComplexity: 1,

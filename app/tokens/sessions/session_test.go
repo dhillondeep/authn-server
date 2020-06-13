@@ -6,16 +6,16 @@ import (
 
 	jwt "gopkg.in/square/go-jose.v2/jwt"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data/mock"
 	"github.com/keratin/authn-server/app/tokens/sessions"
+	"github.com/keratin/authn-server/conf"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestNewAndParseAndSign(t *testing.T) {
 	store := mock.NewRefreshTokenStore()
-	cfg := app.Config{
+	cfg := conf.Config{
 		AuthNURL:          &url.URL{Scheme: "http", Host: "authn.example.com"},
 		SessionSigningKey: []byte("key-a-reno"),
 	}
@@ -46,10 +46,10 @@ func TestParseInvalidSessionJWT(t *testing.T) {
 	authn := url.URL{Scheme: "http", Host: "authn.example.com"}
 	mainApp := url.URL{Scheme: "http", Host: "app.example.com"}
 	key := []byte("current key")
-	cfg := app.Config{AuthNURL: &authn, SessionSigningKey: key}
+	cfg := conf.Config{AuthNURL: &authn, SessionSigningKey: key}
 
 	t.Run("old key", func(t *testing.T) {
-		token, err := sessions.New(store, &app.Config{AuthNURL: &authn}, 1, mainApp.Host)
+		token, err := sessions.New(store, &conf.Config{AuthNURL: &authn}, 1, mainApp.Host)
 		require.NoError(t, err)
 		tokenStr, err := token.Sign([]byte("old key"))
 		require.NoError(t, err)
@@ -59,7 +59,7 @@ func TestParseInvalidSessionJWT(t *testing.T) {
 	})
 
 	t.Run("different audience", func(t *testing.T) {
-		token, err := sessions.New(store, &app.Config{AuthNURL: &authn}, 2, mainApp.Host)
+		token, err := sessions.New(store, &conf.Config{AuthNURL: &authn}, 2, mainApp.Host)
 		require.NoError(t, err)
 		token.Audience = jwt.Audience{mainApp.String()}
 		tokenStr, err := token.Sign(key)

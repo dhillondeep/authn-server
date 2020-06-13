@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/models"
 	"github.com/keratin/authn-server/app/tokens/sessions"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/lib/route"
 	"github.com/keratin/authn-server/server/test"
 	"github.com/stretchr/testify/assert"
@@ -46,7 +46,7 @@ func TestDeleteSessionFailure(t *testing.T) {
 	server := test.Server(testApp)
 	defer server.Close()
 
-	badCfg := &app.Config{
+	badCfg := &conf.Config{
 		AuthNURL:           testApp.Config.AuthNURL,
 		SessionCookieName:  testApp.Config.SessionCookieName,
 		SessionSigningKey:  []byte("wrong"),

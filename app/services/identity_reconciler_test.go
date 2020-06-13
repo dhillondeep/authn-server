@@ -8,16 +8,16 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/keratin/authn-server/app/services"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/lib/oauth"
 	"golang.org/x/oauth2"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data/mock"
 )
 
 func TestIdentityReconciler(t *testing.T) {
 	store := mock.NewAccountStore()
-	cfg := &app.Config{}
+	cfg := &conf.Config{}
 
 	t.Run("linked account", func(t *testing.T) {
 		acct, err := store.Create("linked@test.com", []byte("password"))

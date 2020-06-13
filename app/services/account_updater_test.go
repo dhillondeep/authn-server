@@ -4,11 +4,11 @@ import (
 	"testing"
 
 	"github.com/keratin/authn-server/app/services"
+	"github.com/keratin/authn-server/conf"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data/mock"
 )
 
@@ -18,7 +18,7 @@ func TestAccountUpdater(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Run("email usernames", func(t *testing.T) {
-		cfg := &app.Config{
+		cfg := &conf.Config{
 			UsernameIsEmail: true,
 		}
 
@@ -38,7 +38,7 @@ func TestAccountUpdater(t *testing.T) {
 	})
 
 	t.Run("username taken", func(t *testing.T) {
-		cfg := &app.Config{
+		cfg := &conf.Config{
 			UsernameIsEmail:   false,
 			UsernameMinLength: 3,
 		}
@@ -51,7 +51,7 @@ func TestAccountUpdater(t *testing.T) {
 	})
 
 	t.Run("string usernames", func(t *testing.T) {
-		cfg := &app.Config{
+		cfg := &conf.Config{
 			UsernameIsEmail:   false,
 			UsernameMinLength: 5,
 		}

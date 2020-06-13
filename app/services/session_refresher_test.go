@@ -4,11 +4,11 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data/mock"
 	"github.com/keratin/authn-server/app/data/private"
 	"github.com/keratin/authn-server/app/services"
 	"github.com/keratin/authn-server/app/tokens/sessions"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/lib/route"
 	"github.com/keratin/authn-server/ops"
 	"github.com/sirupsen/logrus"
@@ -20,7 +20,7 @@ func TestSessionRefresher(t *testing.T) {
 	rsaKey, err := private.GenerateKey(512)
 	require.NoError(t, err)
 	keyStore := mock.NewKeyStore(rsaKey)
-	cfg := &app.Config{
+	cfg := &conf.Config{
 		AuthNURL: &url.URL{Scheme: "http", Host: "authn.example.com"},
 	}
 	refreshStore := mock.NewRefreshTokenStore()

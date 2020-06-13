@@ -3,15 +3,15 @@ package test
 import (
 	"net/http"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data"
 	"github.com/keratin/authn-server/app/models"
 	"github.com/keratin/authn-server/app/tokens/sessions"
+	"github.com/keratin/authn-server/conf"
 	jose "gopkg.in/square/go-jose.v2"
 	jwt "gopkg.in/square/go-jose.v2/jwt"
 )
 
-func CreateSession(tokenStore data.RefreshTokenStore, cfg *app.Config, accountID int) *http.Cookie {
+func CreateSession(tokenStore data.RefreshTokenStore, cfg *conf.Config, accountID int) *http.Cookie {
 	sessionToken, err := sessions.New(tokenStore, cfg, accountID, cfg.ApplicationDomains[0].String())
 	if err != nil {
 		panic(err)
@@ -35,7 +35,7 @@ func CreateSession(tokenStore data.RefreshTokenStore, cfg *app.Config, accountID
 	}
 }
 
-func RevokeSession(store data.RefreshTokenStore, cfg *app.Config, session *http.Cookie) {
+func RevokeSession(store data.RefreshTokenStore, cfg *conf.Config, session *http.Cookie) {
 	claims, err := sessions.Parse(session.Value, cfg)
 	if err != nil {
 		panic(err)

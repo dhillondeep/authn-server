@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/keratin/authn-server/app"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/server/test"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -16,7 +17,7 @@ import (
 
 func TestGetConfiguration(t *testing.T) {
 	app := &app.App{
-		Config: &app.Config{
+		Config: &conf.Config{
 			AuthNURL: &url.URL{Scheme: "https", Host: "authn.example.com", Path: "/foo"},
 		},
 		Logger: logrus.New(),

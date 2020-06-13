@@ -10,6 +10,7 @@ import (
 	"github.com/keratin/authn-server/app/data/mock"
 	"github.com/keratin/authn-server/app/data/redis"
 	"github.com/keratin/authn-server/app/data/sqlite3"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/lib/route"
 	"github.com/keratin/authn-server/ops"
 	"github.com/keratin/authn-server/server/test"
@@ -104,7 +105,7 @@ func TestGetSessionRefreshSuccess(t *testing.T) {
 
 func TestGetSessionRefreshFailure(t *testing.T) {
 	testApp := &app.App{
-		Config: &app.Config{
+		Config: &conf.Config{
 			AuthNURL:           &url.URL{Scheme: "https", Path: "www.example.com"},
 			SessionCookieName:  "authn-test",
 			SessionSigningKey:  []byte("good"),
@@ -128,7 +129,7 @@ func TestGetSessionRefreshFailure(t *testing.T) {
 	}
 
 	for idx, tc := range testCases {
-		tcCfg := &app.Config{
+		tcCfg := &conf.Config{
 			AuthNURL:           testApp.Config.AuthNURL,
 			SessionCookieName:  testApp.Config.SessionCookieName,
 			SessionSigningKey:  tc.signingKey,

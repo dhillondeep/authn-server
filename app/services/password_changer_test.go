@@ -5,10 +5,10 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data/mock"
 	"github.com/keratin/authn-server/app/models"
 	"github.com/keratin/authn-server/app/services"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/ops"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -18,7 +18,7 @@ import (
 
 func TestPasswordChanger(t *testing.T) {
 	accountStore := mock.NewAccountStore()
-	cfg := &app.Config{
+	cfg := &conf.Config{
 		BcryptCost:            4,
 		PasswordMinComplexity: 1,
 	}

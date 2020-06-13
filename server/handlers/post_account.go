@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"github.com/keratin/authn-server/lib/parse"
 	"net/http"
+
+	"github.com/keratin/authn-server/lib/parse"
 
 	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/services"

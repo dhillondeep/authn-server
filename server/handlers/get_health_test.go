@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/keratin/authn-server/app"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/server/test"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -16,7 +17,7 @@ func TestGetHealth(t *testing.T) {
 	app := &app.App{
 		DbCheck:    func() bool { return true },
 		RedisCheck: func() bool { return true },
-		Config:     &app.Config{},
+		Config:     &conf.Config{},
 		Logger:     logrus.New(),
 	}
 	server := test.Server(app)

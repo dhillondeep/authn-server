@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/keratin/authn-server/app/data/private"
+	"github.com/keratin/authn-server/conf"
 	"github.com/sirupsen/logrus"
 
 	"github.com/keratin/authn-server/app"
@@ -20,7 +21,7 @@ func TestGetJWKs(t *testing.T) {
 	require.NoError(t, err)
 	app := &app.App{
 		KeyStore: mock.NewKeyStore(rsaKey),
-		Config:   &app.Config{},
+		Config:   &conf.Config{},
 		Logger:   logrus.New(),
 	}
 
@@ -40,7 +41,7 @@ func BenchmarkGetJWKs(b *testing.B) {
 	rsaKey, _ := private.GenerateKey(2048)
 	app := &app.App{
 		KeyStore: mock.NewKeyStore(rsaKey),
-		Config:   &app.Config{},
+		Config:   &conf.Config{},
 	}
 
 	server := test.Server(app)

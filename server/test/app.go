@@ -7,6 +7,7 @@ import (
 	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data/mock"
 	"github.com/keratin/authn-server/app/data/private"
+	"github.com/keratin/authn-server/conf"
 	"github.com/keratin/authn-server/lib/oauth"
 	"github.com/keratin/authn-server/lib/route"
 	"github.com/keratin/authn-server/ops"
@@ -24,7 +25,7 @@ func App() *app.App {
 		panic(err)
 	}
 
-	cfg := app.Config{
+	cfg := conf.Config{
 		BcryptCost:              4,
 		SessionSigningKey:       []byte("TestKey"),
 		AuthNURL:                authnURL,

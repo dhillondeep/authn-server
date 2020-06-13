@@ -3,9 +3,9 @@ package services_test
 import (
 	"testing"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/data/mock"
 	"github.com/keratin/authn-server/app/services"
+	"github.com/keratin/authn-server/conf"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -15,7 +15,7 @@ func TestCredentialsVerifierSuccess(t *testing.T) {
 	password := "mysecret"
 	bcrypted := []byte("$2a$04$lzQPXlov4RFLxps1uUGq4e4wmVjLYz3WrqQw4bSdfIiJRyo3/fk3C")
 
-	cfg := app.Config{BcryptCost: 4}
+	cfg := conf.Config{BcryptCost: 4}
 	store := mock.NewAccountStore()
 	store.Create(username, bcrypted)
 
@@ -29,7 +29,7 @@ func TestCredentialsVerifierFailure(t *testing.T) {
 	password := "mysecret"
 	bcrypted := []byte("$2a$04$lzQPXlov4RFLxps1uUGq4e4wmVjLYz3WrqQw4bSdfIiJRyo3/fk3C")
 
-	cfg := app.Config{BcryptCost: 4}
+	cfg := conf.Config{BcryptCost: 4}
 	store := mock.NewAccountStore()
 	store.Create("known", bcrypted)
 	acc, _ := store.Create("locked", bcrypted)

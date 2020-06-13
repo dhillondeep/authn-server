@@ -4,14 +4,14 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/keratin/authn-server/app"
 	"github.com/keratin/authn-server/app/tokens/oauth"
+	"github.com/keratin/authn-server/conf"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestOAuthToken(t *testing.T) {
-	cfg := &app.Config{
+	cfg := &conf.Config{
 		AuthNURL:        &url.URL{Scheme: "https", Host: "authn.example.com"},
 		OAuthSigningKey: []byte("key-a-reno"),
 	}
@@ -47,7 +47,7 @@ func TestOAuthToken(t *testing.T) {
 	})
 
 	t.Run("parsing with a different key", func(t *testing.T) {
-		oldCfg := app.Config{
+		oldCfg := conf.Config{
 			AuthNURL:        cfg.AuthNURL,
 			OAuthSigningKey: []byte("old-a-reno"),
 		}
@@ -60,7 +60,7 @@ func TestOAuthToken(t *testing.T) {
 	})
 
 	t.Run("parsing with an unknown issuer and audience", func(t *testing.T) {
-		oldCfg := app.Config{
+		oldCfg := conf.Config{
 			AuthNURL:        &url.URL{Scheme: "https", Host: "unknown.com"},
 			OAuthSigningKey: cfg.OAuthSigningKey,
 		}
